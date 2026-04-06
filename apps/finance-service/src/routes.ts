@@ -15,7 +15,7 @@ import type {
   HoldingResponse,
   SyncResult,
   TransactionRow,
-} from "@localbanksync/shared";
+} from "@clawfin/shared";
 
 export function registerRoutes(app: FastifyInstance, config: Config): void {
   const plaid = getPlaidClient(config);
@@ -26,7 +26,7 @@ export function registerRoutes(app: FastifyInstance, config: Config): void {
   app.post("/create_link_token", async (_req, reply) => {
     const response = await plaid.linkTokenCreate({
       user: { client_user_id: "local-user" },
-      client_name: "LocalBankSync",
+      client_name: "ClawFin",
       products: [Products.Transactions],
       country_codes: [CountryCode.Us],
       language: "en",
@@ -48,7 +48,7 @@ export function registerRoutes(app: FastifyInstance, config: Config): void {
 
       const { access_token, item_id } = response.data;
 
-      // Store access_token securely in Keychain — never in SQLite
+      // Store access_token in encrypted vault — never in SQLite
       await storeAccessToken(item_id, access_token);
 
       // Store item metadata in SQLite

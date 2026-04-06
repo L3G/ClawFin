@@ -1,3 +1,21 @@
+export {
+  DATA_DIR,
+  CONFIG_PATH,
+  VAULT_PATH,
+  DB_PATH,
+  MASTER_KEY_PATH,
+  VAULT_KEY_PLAID_CLIENT_ID,
+  VAULT_KEY_PLAID_SECRET,
+  migrateLegacyDataDir,
+  ensureDataDir,
+  isConfigured,
+  loadAppConfig,
+  saveAppConfig,
+  detectLegacySecrets,
+  removeLegacySecrets,
+  type AppConfig,
+} from "./paths.js";
+
 // ── Database Row Types ──
 
 export interface ItemRow {

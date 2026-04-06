@@ -1,6 +1,21 @@
-# LocalBankSync
+# ClawFin
 
 A local-first bridge between [Plaid](https://plaid.com) and [OpenClaw](https://github.com/anthropics/claude-code) via [MCP](https://modelcontextprotocol.io). All data stays on your machine.
+
+## Quick Start
+
+```bash
+npx clawfin
+```
+
+That's it. The setup wizard walks you through everything on first run.
+
+## What Happens
+
+1. **First run** — interactive wizard asks for your Plaid API keys
+2. **Starts the service** on `http://127.0.0.1:8787`
+3. **Open the dashboard** to connect your bank via Plaid Link
+4. **Configure Claude** with the MCP snippet the wizard prints
 
 ## Architecture
 
@@ -11,100 +26,36 @@ A local-first bridge between [Plaid](https://plaid.com) and [OpenClaw](https://g
 └──────────────┘                └─────────────────┘                        └────────┬────────┘               └───────┘
                                                                                     │
                                                                           ┌─────────┴─────────┐
-                                                                          │  SQLite  │ Keychain │
+                                                                          │  SQLite  │  Vault  │
                                                                           └───────────────────┘
 ```
 
-**Key security properties:**
-- Plaid access tokens are stored in macOS Keychain, never in SQLite or exposed to the MCP layer
-- All services bind only to `127.0.0.1`
-- Account numbers are redacted (last 4 digits only) in MCP responses
+## Commands
 
-## Prerequisites
+| Command | Description |
+|---------|-------------|
+| `npx clawfin` | Start service (runs setup on first use) |
+| `npx clawfin setup` | Run/re-run the setup wizard |
+| `npx clawfin status` | Show connection and service status |
+| `npx clawfin test` | Run diagnostic checks |
+| `npx clawfin mcp` | Start MCP server (used by Claude) |
 
-- Node.js >= 20
-- macOS (for Keychain integration)
-- A [Plaid](https://dashboard.plaid.com/signup) account (free sandbox available)
+## MCP Configuration
 
-## Quick Start
-
-### 1. Install
-
-```bash
-cd localbanksync
-npm install
-```
-
-### 2. Configure
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` with your Plaid credentials:
-
-```
-PLAID_CLIENT_ID=your_client_id
-PLAID_SECRET=your_secret
-PLAID_ENV=sandbox
-PORT=8787
-```
-
-### 3. Run the finance service
-
-```bash
-npm run dev
-```
-
-### 4. Connect your bank
-
-Open [http://127.0.0.1:8787/link/](http://127.0.0.1:8787/link/) in your browser and follow the Plaid Link flow.
-
-In sandbox mode, use these test credentials:
-- Username: `user_good`
-- Password: `pass_good`
-
-### 5. Configure OpenClaw
-
-Add this to your Claude Code MCP settings (`~/.claude/claude_desktop_config.json` or project `.mcp.json`):
+Add this to your Claude Code config (`.mcp.json` or `~/.claude.json`):
 
 ```json
 {
   "mcpServers": {
-    "localbanksync": {
-      "command": "node",
-      "args": ["<path-to>/localbanksync/apps/mcp-server/dist/index.js"],
-      "env": {
-        "FINANCE_SERVICE_URL": "http://127.0.0.1:8787"
-      }
-    }
-  }
-}
-```
-
-Or for development with tsx:
-
-```json
-{
-  "mcpServers": {
-    "localbanksync": {
+    "clawfin": {
       "command": "npx",
-      "args": ["tsx", "<path-to>/localbanksync/apps/mcp-server/src/index.ts"],
-      "env": {
-        "FINANCE_SERVICE_URL": "http://127.0.0.1:8787"
-      }
+      "args": ["clawfin", "mcp"]
     }
   }
 }
 ```
 
-### 6. Use it
-
-Ask Claude things like:
-- "What are my account balances?"
-- "Show my recent transactions"
-- "What investments do I hold?"
-- "Sync my latest transactions"
+The MCP server automatically starts the finance service if it's not running.
 
 ## MCP Tools
 
@@ -112,43 +63,69 @@ Ask Claude things like:
 |------|-------------|
 | `finance_list_accounts` | List all linked bank accounts |
 | `finance_get_balances` | Get current balances for all accounts |
-| `finance_get_transactions` | Get recent transactions (optional `days` parameter) |
+| `finance_get_transactions` | Get recent transactions (optional `days` param) |
 | `finance_get_holdings` | Get investment holdings |
 | `finance_sync_now` | Trigger incremental transaction sync |
-| `finance_connection_status` | Check connection status of linked institutions |
+| `finance_connection_status` | Check connection status |
+
+## How It Works
+
+### Storage
+
+All data lives in `~/.clawfin/`:
+
+| File | Purpose |
+|------|---------|
+| `config.json` | Plaid environment and port (no secrets) |
+| `vault.enc` | AES-256-GCM encrypted credentials and access tokens |
+| `master.key` | 32-byte encryption key (chmod 600) |
+| `clawfin.db` | SQLite database (accounts, transactions, holdings) |
+
+### Security
+
+- **Plaid credentials** and **access tokens** are encrypted with AES-256-GCM in `vault.enc` — never stored in plaintext
+- **config.json** contains only non-secret settings (environment, port)
+- **master.key** is a random 32-byte key with restricted file permissions
+- **All HTTP** binds to `127.0.0.1` only
+- **MCP responses** redact account numbers (last 4 digits only) and strip token fields
+
+### Cross-Platform
+
+Works on macOS, Linux, and Windows. No native dependencies — the vault uses Node.js built-in `crypto` module.
+
+### Migration
+
+If you used an earlier version under the name `LocalBankSync`, ClawFin automatically migrates `~/.localbanksync` to `~/.clawfin` on first run. No data is lost — your vault, database, and config carry over seamlessly.
 
 ## Project Structure
 
 ```
-localbanksync/
+clawfin/
 ├── apps/
+│   ├── cli/                # CLI entry point + setup wizard
 │   ├── finance-service/    # Core backend (Fastify + Plaid SDK)
 │   ├── mcp-server/         # MCP stdio server (thin adapter)
 │   └── link-ui/            # Plaid Link frontend
 ├── packages/
-│   └── shared/             # Shared types and utilities
+│   ├── shared/             # Shared types, config, paths
+│   └── vault/              # AES-256-GCM encrypted storage
 └── docs/
 ```
 
 ## Development
 
 ```bash
-# Run finance-service in watch mode
-npm run dev
-
-# Build all packages
+git clone https://github.com/L3G/ClawFin.git
+cd ClawFin
+npm install
 npm run build
-
-# Run MCP server (for testing)
-npm run mcp
+npm start
 ```
 
-## Security
+## Prerequisites
 
-- Access tokens are stored in macOS Keychain via `keytar`
-- SQLite stores only metadata, never secrets
-- The MCP server redacts account numbers and strips token fields
-- All HTTP traffic is localhost-only
+- Node.js >= 20
+- A [Plaid](https://dashboard.plaid.com/signup) account (free sandbox available)
 
 ## License
 

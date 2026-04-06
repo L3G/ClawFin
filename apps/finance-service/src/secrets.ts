@@ -1,39 +1,41 @@
-import keytar from "keytar";
+import { Vault } from "@clawfin/vault";
+import { VAULT_PATH, MASTER_KEY_PATH } from "@clawfin/shared";
 
-const SERVICE_NAME = "localbanksync";
+const PREFIX = "plaid_access_token:";
+
+let vault: Vault;
+
+function getVault(): Vault {
+  if (!vault) {
+    vault = new Vault(VAULT_PATH, MASTER_KEY_PATH);
+  }
+  return vault;
+}
 
 /**
- * Store a Plaid access token in the macOS Keychain.
- * The item_id is used as the account key — the actual access_token
- * never leaves this module except when calling Plaid APIs.
+ * Store a Plaid access token in the encrypted vault.
+ * The access_token never leaves this module except when calling Plaid APIs.
  */
 export async function storeAccessToken(
   itemId: string,
   accessToken: string
 ): Promise<void> {
-  await keytar.setPassword(SERVICE_NAME, itemId, accessToken);
+  getVault().set(`${PREFIX}${itemId}`, accessToken);
 }
 
-/**
- * Retrieve a Plaid access token from the macOS Keychain.
- */
 export async function getAccessToken(
   itemId: string
 ): Promise<string | null> {
-  return keytar.getPassword(SERVICE_NAME, itemId);
+  return getVault().get(`${PREFIX}${itemId}`);
 }
 
-/**
- * Remove a stored access token.
- */
 export async function deleteAccessToken(itemId: string): Promise<boolean> {
-  return keytar.deletePassword(SERVICE_NAME, itemId);
+  return getVault().delete(`${PREFIX}${itemId}`);
 }
 
-/**
- * List all stored item IDs.
- */
 export async function listStoredItems(): Promise<string[]> {
-  const credentials = await keytar.findCredentials(SERVICE_NAME);
-  return credentials.map((c) => c.account);
+  return getVault()
+    .keys()
+    .filter((k) => k.startsWith(PREFIX))
+    .map((k) => k.slice(PREFIX.length));
 }

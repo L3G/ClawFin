@@ -3,6 +3,8 @@ dist/
 *.db
 .env
 *.tsbuildinfo
+master.key
+vault.enc
 
 # Claude Code
 .claude/
