@@ -117,9 +117,8 @@ clawfin/
 ```bash
 git clone https://github.com/L3G/ClawFin.git
 cd ClawFin
-npm install
-npm run build
-npm start
+npm install    # also builds all packages automatically
+npx clawfin    # starts setup wizard on first run
 ```
 
 ## Prerequisites

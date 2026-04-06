@@ -9,8 +9,8 @@
   ],
   "scripts": {
     "build": "npm run build --workspace=packages/shared --workspace=packages/vault && npm run build --workspace=apps/finance-service --workspace=apps/mcp-server --workspace=apps/cli",
+    "postinstall": "npm run build",
     "start": "node apps/cli/dist/index.js",
-    "prestart": "npm run build",
     "dev": "npm run dev --workspace=apps/finance-service",
     "setup": "node apps/cli/dist/index.js setup",
     "status": "node apps/cli/dist/index.js status",
