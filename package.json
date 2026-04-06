@@ -1,0 +1,25 @@
+{
+  "name": "localbanksync",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local-first bridge between Plaid and OpenClaw via MCP",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=apps/finance-service",
+    "dev:all": "concurrently \"npm run dev --workspace=apps/finance-service\" \"npm run dev --workspace=apps/link-ui\"",
+    "build": "npm run build --workspaces",
+    "lint": "tsc --noEmit --workspaces",
+    "mcp": "npm run start --workspace=apps/mcp-server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LocalBankSync — Connect Your Bank</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f1117;
+      color: #e4e4e7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: #1a1b23;
+      border: 1px solid #2a2b35;
+      border-radius: 16px;
+      padding: 48px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    p { color: #9ca3af; font-size: 14px; margin-bottom: 24px; }
+    button {
+      background: #6366f1;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 32px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.15s;
+    }
+    button:hover { background: #4f46e5; }
+    button:disabled { background: #374151; cursor: not-allowed; }
+    #status {
+      margin-top: 20px;
+      font-size: 13px;
+      min-height: 20px;
+    }
+    .success { color: #34d399; }
+    .error { color: #f87171; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>LocalBankSync</h1>
+    <p>Connect your bank account securely via Plaid.<br/>All data stays on your machine.</p>
+    <button id="connect-btn" disabled>Loading…</button>
+    <div id="status"></div>
+  </div>
+
+  <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+  <script>
+    const btn = document.getElementById("connect-btn");
+    const status = document.getElementById("status");
+    const API = window.location.origin;
+
+    async function init() {
+      try {
+        const res = await fetch(`${API}/create_link_token`, { method: "POST" });
+        const { link_token } = await res.json();
+
+        const handler = Plaid.create({
+          token: link_token,
+          onSuccess: async (public_token, metadata) => {
+            status.textContent = "Connecting…";
+            status.className = "";
+            try {
+              const exRes = await fetch(`${API}/exchange_public_token`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  public_token,
+                  institution_name: metadata.institution?.name,
+                }),
+              });
+              const result = await exRes.json();
+              status.textContent = `Connected! ${result.accounts_linked} account(s) linked.`;
+              status.className = "success";
+            } catch (err) {
+              status.textContent = `Error: ${err.message}`;
+              status.className = "error";
+            }
+          },
+          onExit: (err) => {
+            if (err) {
+              status.textContent = `Plaid Link exited: ${err.display_message || err.error_code}`;
+              status.className = "error";
+            }
+          },
+        });
+
+        btn.textContent = "Connect Bank Account";
+        btn.disabled = false;
+        btn.addEventListener("click", () => handler.open());
+      } catch (err) {
+        status.textContent = `Failed to initialize: ${err.message}`;
+        status.className = "error";
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

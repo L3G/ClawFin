@@ -1,0 +1,8 @@
+{
+  "name": "@localbanksync/link-ui",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'link-ui is served by finance-service at /link/'"
+  }
+}
