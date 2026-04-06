@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "bin": {
-    "clawfin": "dist/index.js"
+    "clawfin": "bin/clawfin.js"
   },
   "main": "dist/index.js",
   "scripts": {

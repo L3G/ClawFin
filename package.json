@@ -1,5 +1,5 @@
 {
-  "name": "clawfin",
+  "name": "@clawfin/root",
   "version": "0.1.0",
   "private": true,
   "description": "Local-first bridge between Plaid and OpenClaw via MCP",
