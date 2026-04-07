@@ -1,5 +1,7 @@
 # ClawFin
 
+> **This project is archived and no longer maintained.**
+
 A local-first bridge between [Plaid](https://plaid.com) and [OpenClaw](https://github.com/anthropics/claude-code) via [MCP](https://modelcontextprotocol.io). All data stays on your machine.
 
 ## Quick Start
