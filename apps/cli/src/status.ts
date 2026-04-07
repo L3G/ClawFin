@@ -14,7 +14,7 @@ export async function runStatus(): Promise<void> {
 
   // Check config
   if (!isConfigured()) {
-    console.log("  ✗ Not configured — run: npx clawfin setup\n");
+    console.log("  ✗ Not configured — run: npx @l3g/clawfin setup\n");
     return;
   }
   const config = loadAppConfig()!;
@@ -41,7 +41,7 @@ export async function runStatus(): Promise<void> {
     }
   } catch {
     console.log(`  ✗ Service not running`);
-    console.log(`    Start it with: npx clawfin`);
+    console.log(`    Start it with: npx @l3g/clawfin`);
   }
 
   console.log();

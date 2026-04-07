@@ -67,8 +67,15 @@ app.register(async (instance) => {
 
 // ── Serve link-ui at /link/ ──
 
+// When bundled by tsup, static files are copied to static/link-ui/ relative to dist/
+// In dev mode, they're at ../../link-ui/public relative to src/
+const staticRoot = process.env.CLAWFIN_STATIC_ROOT
+  || (path.basename(__dirname) === "dist" || path.basename(__dirname) === "src"
+    ? path.resolve(__dirname, "../static/link-ui")
+    : path.resolve(__dirname, "../../link-ui/public"));
+
 app.register(fastifyStatic, {
-  root: path.resolve(__dirname, "../../link-ui/public"),
+  root: staticRoot,
   prefix: "/link/",
   decorateReply: false,
 });
@@ -76,7 +83,7 @@ app.register(fastifyStatic, {
 // ── Serve dashboard at / ──
 
 app.register(fastifyStatic, {
-  root: path.resolve(__dirname, "../../link-ui/public"),
+  root: staticRoot,
   prefix: "/dashboard/",
   decorateReply: false,
 });

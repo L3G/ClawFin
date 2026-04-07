@@ -43,7 +43,7 @@ export async function runSetup(): Promise<void> {
 
   1. Sign up at https://dashboard.plaid.com/signup
   2. Get your API keys from https://dashboard.plaid.com/developers/keys
-  3. Run this setup again: npx clawfin setup
+  3. Run this setup again: npx @l3g/clawfin setup
 `);
     return;
   }
@@ -109,7 +109,7 @@ export async function runSetup(): Promise<void> {
   Next steps:
 
   1. Start the service:
-     npx clawfin
+     npx @l3g/clawfin
 
   2. Open your browser to connect your bank:
      http://127.0.0.1:${config.port}/link/
@@ -126,7 +126,7 @@ export function printMcpConfig(): void {
       mcpServers: {
         clawfin: {
           command: "npx",
-          args: ["clawfin", "mcp"],
+          args: ["@l3g/clawfin", "mcp"],
         },
       },
     },

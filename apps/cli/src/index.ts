@@ -52,13 +52,13 @@ function printHelp() {
   ClawFin — local-first Plaid-to-MCP bridge
 
   Usage:
-    clawfin            Start service (runs setup if first time)
-    clawfin setup      Run interactive setup wizard
-    clawfin status     Show connection and service status
-    clawfin test       Run diagnostic checks
-    clawfin start      Start finance service
-    clawfin mcp        Start MCP server (stdio, used by Claude)
-    clawfin help       Show this help
+    npx @l3g/clawfin            Start service (runs setup if first time)
+    npx @l3g/clawfin setup      Run interactive setup wizard
+    npx @l3g/clawfin status     Show connection and service status
+    npx @l3g/clawfin test       Run diagnostic checks
+    npx @l3g/clawfin start      Start finance service
+    npx @l3g/clawfin mcp        Start MCP server (stdio, used by Claude)
+    npx @l3g/clawfin help       Show this help
 `);
 }
 

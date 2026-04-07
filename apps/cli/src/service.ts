@@ -7,18 +7,15 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Resolve the finance-service entry point.
- * Works both in dev (src/dist colocated) and published installs
- * by resolving relative to this file's location in the monorepo.
+ * After tsup bundling, finance-service.js is a sibling of this file in dist/.
  */
 function resolveServiceEntry(): string {
-  // From cli/dist/service.js → finance-service/dist/index.js
-  // From cli/src/service.ts → finance-service/dist/index.js  (same relative)
-  return path.resolve(__dirname, "../../finance-service/dist/index.js");
+  return path.resolve(__dirname, "finance-service.js");
 }
 
 export async function startService(opts: { foreground: boolean }): Promise<void> {
   if (!isConfigured()) {
-    console.error("\n  Not configured. Run: npx clawfin setup\n");
+    console.error("\n  Not configured. Run: npx @l3g/clawfin setup\n");
     process.exit(1);
   }
 
@@ -66,7 +63,7 @@ export async function ensureServiceRunning(port: number): Promise<void> {
   }
 
   throw new Error(
-    `Finance service failed to start on port ${port}.\nRun "npx clawfin" manually for details.`
+    `Finance service failed to start on port ${port}.\nRun "npx @l3g/clawfin" manually for details.`
   );
 }
 

@@ -1,6 +1,8 @@
 node_modules/
 dist/
+static/
 *.db
+*.tgz
 .env
 *.tsbuildinfo
 master.key

@@ -29,14 +29,14 @@ export async function runTest(): Promise<void> {
 
   // 1. Config
   if (!isConfigured()) {
-    fail("Config missing — run: npx clawfin setup");
+    fail("Config missing — run: npx @l3g/clawfin setup");
     console.log();
     process.exitCode = 1;
     return;
   }
   const config = loadAppConfig();
   if (!config || !config.plaidEnv) {
-    fail("Config file is invalid — run: npx clawfin setup");
+    fail("Config file is invalid — run: npx @l3g/clawfin setup");
     console.log();
     process.exitCode = 1;
     return;
@@ -75,7 +75,7 @@ export async function runTest(): Promise<void> {
     if (hasClientId && hasSecret) {
       pass(`Plaid credentials present (env: ${config.plaidEnv})`);
     } else {
-      fail("Plaid credentials missing from vault — run: npx clawfin setup");
+      fail("Plaid credentials missing from vault — run: npx @l3g/clawfin setup");
       failures++;
     }
   } catch (err) {
@@ -96,7 +96,7 @@ export async function runTest(): Promise<void> {
       await ensureServiceRunning(port);
       running = true;
     } catch {
-      fail("Service failed to start — run: npx clawfin");
+      fail("Service failed to start — run: npx @l3g/clawfin");
       failures++;
     }
   }

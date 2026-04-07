@@ -5,7 +5,7 @@ A local-first bridge between [Plaid](https://plaid.com) and [OpenClaw](https://g
 ## Quick Start
 
 ```bash
-npx clawfin
+npx @l3g/clawfin
 ```
 
 That's it. The setup wizard walks you through everything on first run.
@@ -34,11 +34,11 @@ That's it. The setup wizard walks you through everything on first run.
 
 | Command | Description |
 |---------|-------------|
-| `npx clawfin` | Start service (runs setup on first use) |
-| `npx clawfin setup` | Run/re-run the setup wizard |
-| `npx clawfin status` | Show connection and service status |
-| `npx clawfin test` | Run diagnostic checks |
-| `npx clawfin mcp` | Start MCP server (used by Claude) |
+| `npx @l3g/clawfin` | Start service (runs setup on first use) |
+| `npx @l3g/clawfin setup` | Run/re-run the setup wizard |
+| `npx @l3g/clawfin status` | Show connection and service status |
+| `npx @l3g/clawfin test` | Run diagnostic checks |
+| `npx @l3g/clawfin mcp` | Start MCP server (used by Claude) |
 
 ## MCP Configuration
 
@@ -49,7 +49,7 @@ Add this to your Claude Code config (`.mcp.json` or `~/.claude.json`):
   "mcpServers": {
     "clawfin": {
       "command": "npx",
-      "args": ["clawfin", "mcp"]
+      "args": ["@l3g/clawfin", "mcp"]
     }
   }
 }
@@ -118,7 +118,7 @@ clawfin/
 git clone https://github.com/L3G/ClawFin.git
 cd ClawFin
 npm install    # also builds all packages automatically
-npx clawfin    # starts setup wizard on first run
+npx @l3g/clawfin    # starts setup wizard on first run
 ```
 
 ## Prerequisites

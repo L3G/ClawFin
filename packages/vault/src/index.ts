@@ -18,7 +18,7 @@ export class MissingMasterKeyError extends Error {
     super(
       `Vault exists but master key is missing at ${keyPath}.\n` +
         `Your encrypted secrets cannot be decrypted.\n` +
-        `Restore ~/.clawfin/master.key from backup, or run "npx clawfin setup" to reconnect your accounts.`
+        `Restore ~/.clawfin/master.key from backup, or run "npx @l3g/clawfin setup" to reconnect your accounts.`
     );
     this.name = "MissingMasterKeyError";
   }
@@ -28,7 +28,7 @@ export class CorruptMasterKeyError extends Error {
   constructor(keyPath: string, expected: number, got: number) {
     super(
       `Master key at ${keyPath} is corrupted (expected ${expected} bytes, got ${got}).\n` +
-        `Restore the original master.key from backup, or run "npx clawfin setup" to start fresh.`
+        `Restore the original master.key from backup, or run "npx @l3g/clawfin setup" to start fresh.`
     );
     this.name = "CorruptMasterKeyError";
   }
@@ -38,7 +38,7 @@ export class VaultDecryptionError extends Error {
   constructor() {
     super(
       `Vault decryption failed — the master key may not match this vault file.\n` +
-        `Restore the correct master.key from backup, or run "npx clawfin setup" to reconnect your accounts.`
+        `Restore the correct master.key from backup, or run "npx @l3g/clawfin setup" to reconnect your accounts.`
     );
     this.name = "VaultDecryptionError";
   }

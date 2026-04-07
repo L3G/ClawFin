@@ -22,7 +22,7 @@ export function loadConfig(): Config {
   const appConfig = loadAppConfig();
   if (!appConfig) {
     throw new Error(
-      "ClawFin is not configured.\nRun: npx clawfin setup"
+      "ClawFin is not configured.\nRun: npx @l3g/clawfin setup"
     );
   }
 
@@ -45,7 +45,7 @@ export function loadConfig(): Config {
 
   if (!plaidClientId || !plaidSecret) {
     throw new Error(
-      "Plaid credentials not found in vault.\nRun: npx clawfin setup"
+      "Plaid credentials not found in vault.\nRun: npx @l3g/clawfin setup"
     );
   }
 

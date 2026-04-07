@@ -1,5 +1,5 @@
 /**
- * MCP entry point — launched via `npx clawfin mcp`.
+ * MCP entry point — launched via `npx @l3g/clawfin mcp`.
  * Ensures finance-service is running, then starts the MCP server.
  */
 import { loadAppConfig } from "@clawfin/shared";
@@ -8,7 +8,7 @@ import { ensureServiceRunning } from "./service.js";
 const config = loadAppConfig();
 if (!config) {
   process.stderr.write(
-    "ClawFin is not configured. Run: npx clawfin setup\n"
+    "ClawFin is not configured. Run: npx @l3g/clawfin setup\n"
   );
   process.exit(1);
 }
@@ -20,4 +20,4 @@ process.env.FINANCE_SERVICE_URL = `http://127.0.0.1:${config.port}`;
 await ensureServiceRunning(config.port);
 
 // Now start the actual MCP server
-await import("@clawfin/mcp-server/entry");
+await import("./mcp-entry.js");

@@ -1,14 +1,23 @@
 {
   "name": "@clawfin/root",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "Local-first bridge between Plaid and OpenClaw via MCP",
+  "description": "Local-first bridge between Plaid and Claude via MCP",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/L3G/ClawFin.git"
+  },
+  "homepage": "https://github.com/L3G/ClawFin",
+  "bugs": {
+    "url": "https://github.com/L3G/ClawFin/issues"
+  },
   "workspaces": [
     "packages/*",
     "apps/*"
   ],
   "scripts": {
-    "build": "npm run build --workspace=packages/shared --workspace=packages/vault && npm run build --workspace=apps/finance-service --workspace=apps/mcp-server --workspace=apps/cli",
+    "build": "npm run build --workspace=packages/shared --workspace=packages/vault && npm run build --workspace=apps/finance-service --workspace=apps/mcp-server && npm run build --workspace=apps/cli",
     "postinstall": "npm run build",
     "start": "node apps/cli/dist/index.js",
     "dev": "npm run dev --workspace=apps/finance-service",
@@ -22,6 +31,5 @@
   },
   "engines": {
     "node": ">=20.0.0"
-  },
-  "license": "MIT"
+  }
 }

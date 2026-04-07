@@ -9,7 +9,7 @@ const FINANCE_SERVICE_URL =
 // ── Helpers ──
 
 const SERVICE_DOWN_MSG =
-  "ClawFin service is not running.\nStart it with: npx clawfin";
+  "ClawFin service is not running.\nStart it with: npx @l3g/clawfin";
 const NO_ACCOUNTS_MSG =
   "No financial accounts connected.\nOpen http://127.0.0.1:8787 and click \"Connect Bank\" to link your bank.";
 
@@ -44,9 +44,9 @@ async function postService<T>(path: string, body?: unknown): Promise<T> {
 }
 
 function friendlyHttpError(path: string, status: number): string {
-  if (status === 500) return `The finance service encountered an internal error on ${path}.\nRun: npx clawfin test`;
+  if (status === 500) return `The finance service encountered an internal error on ${path}.\nRun: npx @l3g/clawfin test`;
   if (status === 404) return `Endpoint ${path} not found. You may need to update ClawFin.`;
-  return `Request to ${path} failed (HTTP ${status}).\nRun: npx clawfin status`;
+  return `Request to ${path} failed (HTTP ${status}).\nRun: npx @l3g/clawfin status`;
 }
 
 /** Guard that throws a friendly error when the account list is empty */
